@@ -32,8 +32,8 @@
         const element = document.createElement('div');
         element.style.position = 'absolute';
         element.style.borderRadius = '50%';
-        element.style.left = x;
-        element.style.top = y;
+        element.style.left = x + 'px';
+        element.style.top = y + 'px';
         element.style.transform = 'translate(-50%, -50%)';
         element.style.backgroundColor = '#000';
         element.style.height = 0;
@@ -60,7 +60,7 @@
 
         // Add the styles to cause the ripple effect.
         setTimeout(function () {
-            const newSize = size * 2;
+            const newSize = (size * 2) + 'px';
             ripple.style.height = newSize;
             ripple.style.width = newSize;
             ripple.style.opacity = 0;
@@ -86,12 +86,14 @@
         const width = target.offsetWidth;
         const height = target.offsetHeight;
         const size = height > width ? height : width;
+        const x = (e.x - target.offsetLeft) + window.scrollX;
+        const y = (e.y - target.offsetTop) + window.scrollY;
 
         rippleAnimation(
-            target,                   // Element
-            e.x - target.offsetLeft,  // Ripple X Position
-            e.y - target.offsetTop,   // Ripple Y Position
-            size                      // Ripple Size
+            target, // Element
+            x,      // Mouse Click X Position
+            y,      // Mouse Click Y Position
+            size    // Ripple Size
         );
     }
 

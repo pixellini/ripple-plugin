@@ -104,7 +104,7 @@
     function attachRippleToElements () {
         const elements = document.getElementsByClassName(RIPPLE_CLASS);
 
-        for(var i = 0; i < elements.length; i++) {
+        for(let i = 0; i < elements.length; i++) {
             elements[i].addEventListener('click', onClickHandler);
         }
     }

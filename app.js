@@ -1,20 +1,3 @@
-if (!Element.prototype.matches) {
-    Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
-}
-
-if (!Element.prototype.closest) {
-    Element.prototype.closest = function(s) {
-        var el = this;
-  
-        do {
-            if (el.matches(s)) 
-                return el;
-            el = el.parentElement || el.parentNode;
-        } while (el !== null && el.nodeType === 1);
-        return null;
-    };
-}
-
 /**
  * @author Jacob Gibellini
  * @date 15/06/2019
@@ -22,6 +5,7 @@ if (!Element.prototype.closest) {
 (function () {
     // Constants
     const RIPPLE_CLASS = 'ripple';
+    const ELEMENT_SIZE_TIME_TOGGLE = 300; //px
 
     /**
      * @description
@@ -68,7 +52,7 @@ if (!Element.prototype.closest) {
      * and then remove it once it's done animating.
      */
     function rippleAnimation (element, x, y, size) {
-        const time = size > 300 ? 2 : 1;
+        const time = size > ELEMENT_SIZE_TIME_TOGGLE ? 2 : 1; // seconds
 
         const container = createContainerElement();
         const ripple = createRippleElement(x, y, time);
@@ -105,7 +89,12 @@ if (!Element.prototype.closest) {
         const height = target.offsetHeight;
         const size = height > width ? height : width;
 
-        rippleAnimation(target, e.x - target.offsetLeft, e.y - target.offsetTop, size);
+        rippleAnimation(
+            target,                   // Element
+            e.x - target.offsetLeft,  // Ripple X Position
+            e.y - target.offsetTop,   // Ripple Y Position
+            size                      // Ripple Size
+        );
     }
 
     /**

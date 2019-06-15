@@ -10,8 +10,8 @@
     /**
      * @description
      * A container element to hold the ripple element.
-     * This is so we don't need to change the styling of the selected element.
-     * For example, the overflow need to be hidden.
+     * This is so we don't need to change the styling of the original element width the "ripple" class.
+     * For example, the style "overflow" needs to be hidden to prevent the ripple growing outside the boundaries.
      */
     function createContainerElement () {
         const container = document.createElement('div');
@@ -26,8 +26,7 @@
 
     /**
      * @description
-     * Created the element that will be the ripple effect.
-     * It will initially start at 0 height and width.
+     * Creates the element that will be the ripple effect.
      */
     function createRippleElement (x, y, time) {
         const element = document.createElement('div');
@@ -46,9 +45,9 @@
 
     /**
      * @description
-     * Created the ripple animation by creating an element.
-     * After 30 milliseconds, it will apply new styles to that element
-     * and then remove it once it's done animating.
+     * Creates the ripple animation by creating a ripple element.
+     * After 30 milliseconds, it will apply new styles to that element 
+     * to begin the animation and then remove it once it's done animating.
      */
     function rippleAnimation (element, x, y, size) {
         const time = size > ELEMENT_SIZE_TIME_TOGGLE ? 2 : 1; // seconds

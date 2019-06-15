@@ -1,8 +1,51 @@
+if (!Element.prototype.matches) {
+    Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
+}
+
+if (!Element.prototype.closest) {
+    Element.prototype.closest = function(s) {
+        var el = this;
+  
+        do {
+            if (el.matches(s)) 
+                return el;
+            el = el.parentElement || el.parentNode;
+        } while (el !== null && el.nodeType === 1);
+        return null;
+    };
+}
+
+/**
+ * @author Jacob Gibellini
+ * @date 15/06/2019
+ */
 (function () {
     // Constants
     const RIPPLE_CLASS = 'ripple';
 
-    const rippleElement = ({ x, y, time }) => {
+    /**
+     * @description
+     * A container element to hold the ripple element.
+     * This is so we don't need to change the styling of the selected element.
+     * For example, the overflow need to be hidden.
+     */
+    function createContainerElement () {
+        const container = document.createElement('div');
+        container.style.position = 'absolute';
+        container.style.top = 0;
+        container.style.left = 0;
+        container.style.height = '100%';
+        container.style.width = '100%';
+        container.style.overflow = 'hidden';
+        return container;
+    }
+
+    /**
+     * @description
+     * Created the element that will be the ripple effect.
+     * It will initially start at 0 height and width.
+     */
+    function createRippleElement (x, y, time) {
         const element = document.createElement('div');
         element.style.position = 'absolute';
         element.style.borderRadius = '50%';
@@ -18,43 +61,65 @@
         return element;
     }
 
-    const createRippleAnimation = (element, x, y, size) => {
-        const time = size >= 300 ? 2 : 1;
-        const fullSize = size * 2;
-        const ripple = rippleElement({ x, y, time });
+    /**
+     * @description
+     * Created the ripple animation by creating an element.
+     * After 30 milliseconds, it will apply new styles to that element
+     * and then remove it once it's done animating.
+     */
+    function rippleAnimation (element, x, y, size) {
+        const time = size > 300 ? 2 : 1;
 
-        element.appendChild(ripple); 
+        const container = createContainerElement();
+        const ripple = createRippleElement(x, y, time);
+
+        element.appendChild(container); 
+        container.appendChild(ripple);
 
         // Add the styles to cause the ripple effect.
-        setTimeout(() => {
-            ripple.style.height = fullSize;
-            ripple.style.width = fullSize;
+        setTimeout(function () {
+            const newSize = size * 2;
+            ripple.style.height = newSize;
+            ripple.style.width = newSize;
             ripple.style.opacity = 0;
         }, 30)
 
         // Delete the node from the DOM.
-        setTimeout(() => {
-            element.removeChild(ripple);
+        setTimeout(function () {
+            element.removeChild(container);
         }, time * 1000)
     }
 
-    const onClickHandler = e => {
-        const target = e.target.parentElement.classList.contains(RIPPLE_CLASS) ? e.target.parentElement : e.target;
-        const { offsetLeft, offsetTop, offsetWidth: width, offsetHeight: height } = target;
-        const { x, y } = e;
+    /**
+     * @description
+     * The on click handler for starting the ripple effect.
+     */
+    function onClickHandler (e) {
+        let target = e.target;
+        // If the user clicked the currently animating ripple or container, select the parent element.
+        while (!target.classList.contains(RIPPLE_CLASS)) {
+            target = target.parentElement;
+        }
+
+        const width = target.offsetWidth;
+        const height = target.offsetHeight;
         const size = height > width ? height : width;
 
-        createRippleAnimation(target, x - offsetLeft, y - offsetTop, size);
+        rippleAnimation(target, e.x - target.offsetLeft, e.y - target.offsetTop, size);
     }
 
-    const attachRippleToElements = () => {
+    /**
+     * @description
+     * Attaching the event listeners to all elements with the class "ripple".
+     */
+    function attachRippleToElements () {
         const elements = document.getElementsByClassName(RIPPLE_CLASS);
 
         for(var i = 0; i < elements.length; i++) {
-            elements[i].style.overflow = 'hidden';
             elements[i].addEventListener('click', onClickHandler);
         }
     }
 
+    // Init
     attachRippleToElements();
 })();

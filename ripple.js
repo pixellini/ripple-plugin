@@ -36,7 +36,6 @@
         element.style.left = x;
         element.style.top = y;
         element.style.transform = 'translate(-50%, -50%)';
-        element.style.transformOrigin = 'center center';
         element.style.backgroundColor = '#000';
         element.style.height = 0;
         element.style.width = 0;

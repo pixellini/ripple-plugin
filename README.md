@@ -1,5 +1,5 @@
 # Ripple
-An effect similar to Google's Material UI button click animation or Vuetify ripple effect.
+A JavaScript plugin that creates a ripple effect on any element (like from Material UI or Vuetify).
 
 ## Installation
 Add the JavaScript file to the HTML file.
